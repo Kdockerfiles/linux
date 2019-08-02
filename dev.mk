@@ -3,7 +3,6 @@ KERNEL_DEFCONFIG ?= rockchip_linux_defconfig
 
 KERNEL_VERSION ?= $(shell $(KERNEL_MAKE) -s kernelversion)
 KERNEL_RELEASE ?= $(shell $(KERNEL_MAKE) -s kernelrelease)
-KDEB_PKGVERSION ?= $(KERNEL_VERSION)-$(RELEASE)-ayufan
 
 KERNEL_MAKE ?= make \
 	ARCH=arm64 \
@@ -20,9 +19,6 @@ else
 	@echo "-dev" > .scmversion
 endif
 
-version:
-	@echo "$(KDEB_PKGVERSION)"
-
 .PHONY: info
 info: .config .scmversion
 	@echo $(KERNEL_RELEASE)
@@ -38,14 +34,11 @@ kernel-menuconfig:
 kernel-image: .config .scmversion
 	$(KERNEL_MAKE) Image dtbs -j$$(nproc)
 
-.PHONY: kernel-modules
-kernel-image-and-modules: .config .scmversion
+.PHONY: kernel-all
+kernel-all: .config .scmversion
 	$(KERNEL_MAKE) Image modules dtbs -j$$(nproc)
-	$(KERNEL_MAKE) modules_install INSTALL_MOD_PATH=$(CURDIR)/out/linux_modules
-
-.PHONY: kernel-package
-kernel-package: .config .scmversion
-	KDEB_PKGVERSION=$(KDEB_PKGVERSION) $(KERNEL_MAKE) bindeb-pkg -j$$(nproc)
+	$(KERNEL_MAKE) modules_install INSTALL_MOD_PATH=$(O)/out_modules
+	$(KERNEL_MAKE) dtbs_install INSTALL_DTBS_PATH=$(O)/out_dtbs
 
 .PHONY: kernel-update-dts
 kernel-update-dts: .config .scmversion
