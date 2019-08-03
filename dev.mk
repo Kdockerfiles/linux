@@ -37,8 +37,8 @@ kernel-image: .config .scmversion
 .PHONY: kernel-all
 kernel-all: .config .scmversion
 	$(KERNEL_MAKE) Image modules dtbs -j$$(nproc)
-	$(KERNEL_MAKE) modules_install INSTALL_MOD_PATH=$(O)/out_modules
-	$(KERNEL_MAKE) dtbs_install INSTALL_DTBS_PATH=$(O)/out_dtbs
+	$(KERNEL_MAKE) modules_install INSTALL_MOD_PATH=out_modules
+	$(KERNEL_MAKE) dtbs_install INSTALL_DTBS_PATH=out_dtbs
 
 .PHONY: kernel-update-dts
 kernel-update-dts: .config .scmversion
